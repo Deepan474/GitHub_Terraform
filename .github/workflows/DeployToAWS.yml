@@ -14,10 +14,10 @@ jobs:
               uses: hashicorp/setup-terraform@v3
               with:
                 terraform_version: 1.1.7
-            - name: Initialize Terraform
-              run: terraform init
-            - name: Apply Terraform configuration
-              run: terraform apply -auto-approve
+            #- name: Initialize Terraform
+            # run: terraform init
+            #- name: Apply Terraform configuration
+            # run: terraform apply -auto-approve
             - name: Destroy Terraform-managed infrastructure
               run: terraform destroy -auto-approve
                 
