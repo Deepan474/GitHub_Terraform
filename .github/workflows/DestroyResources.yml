@@ -1,5 +1,5 @@
 name: Deploy to AWS
-on: push
+on: workflow_dispatch
 jobs:
     deploy:
         runs-on: ubuntu-latest
@@ -16,8 +16,5 @@ jobs:
                 terraform_version: 1.1.7
             - name: Initialize Terraform
               run: terraform init
-            - name: Apply Terraform configuration
-              run: terraform apply -auto-approve
-            #- name: Destroy Terraform-managed infrastructure
-             # run: terraform destroy -auto-approve 
-                
+            - name: Destroy Terraform-managed infrastructure
+              run: terraform destroy -auto-approve 
