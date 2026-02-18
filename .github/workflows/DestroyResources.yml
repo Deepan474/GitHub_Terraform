@@ -1,4 +1,4 @@
-name: Deploy to AWS
+name: Destroy resources
 on: workflow_dispatch
 jobs:
     deploy:
@@ -16,5 +16,6 @@ jobs:
                 terraform_version: 1.1.7
             - name: Initialize Terraform
               run: terraform init
+              
             - name: Destroy Terraform-managed infrastructure
               run: terraform destroy -auto-approve 
