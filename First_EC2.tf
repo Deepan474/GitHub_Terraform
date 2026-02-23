@@ -56,7 +56,7 @@ resource "aws_instance" "myec2" {
       pip install --upgrade pip
       pip3 install -r requirements.txt
       pip install gunicorn
-      nohup venv/bin/gunicorn -w 3 -b 0:0:0:0:5000 main:main &
+      nohup venv/bin/gunicorn -w 3 -b 0:0:0:0:5000 main:app &
       EOF
 
     tags = {
