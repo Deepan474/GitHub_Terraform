@@ -67,7 +67,7 @@ python3 -m venv venv
 sudo -u ec2-user nohup /home/ec2-user/Python_Demo/venv/bin/gunicorn \
   -w 3 \
   -b 0.0.0.0:5000 \
-  app:app \
+  main:app \
   > /home/ec2-user/gunicorn.log 2>&1 &
 EOF
       tags = {
