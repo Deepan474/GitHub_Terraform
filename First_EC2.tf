@@ -46,20 +46,33 @@ resource "aws_instance" "myec2" {
 
     user_data = <<-EOF
       #!/bin/bash
+      set -e
+      exec > /var/log/user-data.log 2>&1
+ 
       yum update -y
       yum install -y python3 git
-      cd /home/ec2-user
-      git clone https://github.com/Deepan474/Python_Demo.git
-      cd Python_Demo
+ 
+      # Clone as ec2-user
+      sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git
+      /home/ec2-user/Python_Demo
+ 
+      cd /home/ec2-user/Python_Demo
+ 
       python3 -m venv venv
-      source venv/bin/activate
-      pip install --upgrade pip
-      pip3 install -r requirements.txt
-      pip install gunicorn
-      nohup venv/bin/gunicorn -w 3 -b 0:0:0:0:5000 main:app &
-      EOF
+ 
+      /home/ec2-user/Python_Demo/venv/bin/pip install --upgrade pip
+      /home/ec2-user/Python_Demo/venv/bin/pip install -r requirements.txt
+      /home/ec2-user/Python_Demo/venv/bin/pip install gunicorn
+ 
+      # Start Gunicorn as ec2-user
+      sudo -u ec2-user nohup /home/ec2-user/Python_Demo/venv/bin/gunicorn \
+      -w 3 \
+      -b 0.0.0.0:5000 \
+      app:app \
+      > /home/ec2-user/gunicorn.log 2>&1 &
+    EOF
 
-    tags = {
+      tags = {
         Name = "Terraform-EC2"
     }
 }
