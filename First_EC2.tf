@@ -45,33 +45,31 @@ resource "aws_instance" "myec2" {
     vpc_security_group_ids = [aws_security_group.SG_Demo.id]
 
     user_data = <<-EOF
-      #!/bin/bash
-      set -e
-      exec > /var/log/user-data.log 2>&1
+#!/bin/bash
+set -e
+exec > /var/log/user-data.log 2>&1
  
-      yum update -y
-      yum install -y python3 git
+yum update -y
+yum install -y python3 git
  
-      # Clone as ec2-user
-      sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git
-      /home/ec2-user/Python_Demo
+# Clone as ec2-user
+sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git /home/ec2-user/Python_Demo
  
-      cd /home/ec2-user/Python_Demo
+cd /home/ec2-user/Python_Demo
  
-      python3 -m venv venv
+python3 -m venv venv
  
-      /home/ec2-user/Python_Demo/venv/bin/pip install --upgrade pip
-      /home/ec2-user/Python_Demo/venv/bin/pip install -r requirements.txt
-      /home/ec2-user/Python_Demo/venv/bin/pip install gunicorn
+/home/ec2-user/Python_Demo/venv/bin/pip install --upgrade pip
+/home/ec2-user/Python_Demo/venv/bin/pip install -r requirements.txt
+/home/ec2-user/Python_Demo/venv/bin/pip install gunicorn
  
-      # Start Gunicorn as ec2-user
-      sudo -u ec2-user nohup /home/ec2-user/Python_Demo/venv/bin/gunicorn \
-      -w 3 \
-      -b 0.0.0.0:5000 \
-      app:app \
-      > /home/ec2-user/gunicorn.log 2>&1 &
-    EOF
-
+# Start Gunicorn as ec2-user
+sudo -u ec2-user nohup /home/ec2-user/Python_Demo/venv/bin/gunicorn \
+  -w 3 \
+  -b 0.0.0.0:5000 \
+  app:app \
+  > /home/ec2-user/gunicorn.log 2>&1 &
+EOF
       tags = {
         Name = "Terraform-EC2"
     }
