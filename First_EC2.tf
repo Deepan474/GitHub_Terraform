@@ -23,9 +23,9 @@ resource "aws_vpc_security_group_ingress_rule" "allow_SSH" {
 resource "aws_vpc_security_group_ingress_rule" "allow_Flask_App" {
   security_group_id = aws_security_group.SG_Demo.id
   cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 5000
+  from_port         = 80
   ip_protocol       = "tcp"
-  to_port           = 5000
+  to_port           = 80
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
