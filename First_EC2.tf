@@ -45,31 +45,45 @@ resource "aws_instance" "myec2" {
     vpc_security_group_ids = [aws_security_group.SG_Demo.id]
 
     user_data = <<-EOF
-#!/bin/bash
-set -e
-exec > /var/log/user-data.log 2>&1
- 
-yum update -y
-yum install -y python3 git
- 
-# Clone as ec2-user
-sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git /home/ec2-user/Python_Demo
- 
-cd /home/ec2-user/Python_Demo
- 
-python3 -m venv venv
- 
-/home/ec2-user/Python_Demo/venv/bin/pip install --upgrade pip
-/home/ec2-user/Python_Demo/venv/bin/pip install -r requirements.txt
-/home/ec2-user/Python_Demo/venv/bin/pip install gunicorn
- 
-# Start Gunicorn as ec2-user
-sudo -u ec2-user nohup /home/ec2-user/Python_Demo/venv/bin/gunicorn \
-  -w 3 \
-  -b 0.0.0.0:5000 \
-  main:app \
-  > /home/ec2-user/gunicorn.log 2>&1 &
-EOF
+        #!/bin/bash
+        set -e
+        exec > /var/log/user-data.log 2>&1
+        
+        yum update -y
+        yum install -y python3 git
+        
+        # Clone as ec2-user
+        sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git /home/ec2-user/Python_Demo
+        
+        cd /home/ec2-user/Python_Demo
+        
+        python3 -m venv venv
+        
+        /home/ec2-user/Python_Demo/venv/bin/pip install --upgrade pip
+        /home/ec2-user/Python_Demo/venv/bin/pip install -r requirements.txt
+        /home/ec2-user/Python_Demo/venv/bin/pip install gunicorn
+        
+        # Create a systemd service file for Gunicorn
+        cat <<SERVICE > /etc/systemd/system/gunicorn.service
+          [Unit]
+          Description=Gunicorn instance to serve Flask app
+          After=network.target  
+
+          [Service]
+          User=ec2-user 
+          WorkingDirectory=/home/ec2-user/Python_Demo
+          ExecStart=/home/ec2-user/Python_Demo/venv/bin/gunicorn -w 3 -b 0.0.0.0:5000 main:app
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+          SERVICE
+
+        # Reload systemd to recognize the new service, enable it to start on boot, and start it immediately
+        systemctl daemon-reload
+        systemctl enable gunicorn
+        systemctl start gunicorn
+        EOF
       tags = {
         Name = "Terraform-EC2"
     }
