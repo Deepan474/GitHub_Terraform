@@ -102,6 +102,7 @@ resource "aws_instance" "myec2" {
         # Start Nginx
         systemctl enable nginx
         systemctl restart nginx
+    EOF
       tags = {
         Name = "Terraform-EC2"
     }
