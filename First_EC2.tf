@@ -65,19 +65,19 @@ resource "aws_instance" "myec2" {
         
         # Create a systemd service file for Gunicorn
         cat <<SERVICE > /etc/systemd/system/gunicorn.service
-[Unit]
-Description=Gunicorn instance to serve Flask app
-After=network.target  
+        [Unit]
+        Description=Gunicorn instance to serve Flask app
+        After=network.target  
 
-[Service]
-User=ec2-user 
-WorkingDirectory=/home/ec2-user/Python_Demo
-ExecStart=/home/ec2-user/Python_Demo/venv/bin/gunicorn -w 3 -b 0.0.0.0:5000 main:app
-Restart=always
+        [Service]
+        User=ec2-user 
+        WorkingDirectory=/home/ec2-user/Python_Demo
+        ExecStart=/home/ec2-user/Python_Demo/venv/bin/gunicorn -w 3 -b 0.0.0.0:5000 main:app
+        Restart=always
 
-[Install]
-WantedBy=multi-user.target
-SERVICE
+        [Install]
+        WantedBy=multi-user.target
+        SERVICE
 
         # Reload systemd to recognize the new service, enable it to start on boot, and start it immediately
         systemctl daemon-reload
