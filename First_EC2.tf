@@ -50,7 +50,7 @@ resource "aws_instance" "myec2" {
         exec > /var/log/user-data.log 2>&1
         
         yum update -y
-        yum install -y python3 git
+        yum install -y python3 git nginx
         
         # Clone as ec2-user
         sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git /home/ec2-user/Python_Demo
