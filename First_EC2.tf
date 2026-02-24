@@ -83,7 +83,25 @@ resource "aws_instance" "myec2" {
         systemctl daemon-reload
         systemctl enable gunicorn
         systemctl start gunicorn
-        EOF
+
+        # Configure Nginx as a reverse proxy
+        cat <<NGINX > /etc/nginx/conf.d/flask_app.conf
+        server {
+            listen 80;
+            server_name _;
+
+            location / {
+                proxy_pass http://127.0.0.1:5000;
+                proxy_set_header Host \$host;
+                proxy_set_header X-Real-IP \$remote_addr; 
+                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            }
+        }
+        NGINX
+
+        # Start Nginx
+        systemctl enable nginx
+        systemctl restart nginx
       tags = {
         Name = "Terraform-EC2"
     }
