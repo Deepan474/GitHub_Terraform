@@ -44,7 +44,7 @@ resource "aws_instance" "myec2" {
     instance_type = "t2.micro"
     vpc_security_group_ids = [aws_security_group.SG_Demo.id]
 
-    user_data = file("userdata.sh")
+    user_data = file("user_data.sh")
         
       tags = {
         Name = "Terraform-EC2"
