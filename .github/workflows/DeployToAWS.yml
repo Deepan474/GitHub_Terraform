@@ -18,6 +18,5 @@ jobs:
               run: terraform init
             - name: Apply Terraform configuration
               run: terraform apply -auto-approve
-            #- name: Destroy Terraform-managed infrastructure
-             # run: terraform destroy -auto-approve 
+             
                 
