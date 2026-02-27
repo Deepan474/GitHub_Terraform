@@ -84,7 +84,7 @@ resource "aws_instance" "myec2" {
     associate_public_ip_address = true
 
     user_data = templatefile("user_data.sh", {
-    github_public_key = file("github_actions_key.pub")})
+    github_public_key = file("${path.module}/github_actions_key.pub")})
         
       tags = {
         Name = var.instance_name
