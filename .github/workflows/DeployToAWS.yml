@@ -18,5 +18,19 @@ jobs:
               run: terraform init
             - name: Apply Terraform configuration
               run: terraform apply -auto-approve
-             
+            - name: Get Elastic IP from Terraform output
+              id: get_eip
+              run: |
+                EIP=$(terraform output -raw public_ip)
+                echo "EIP=$EIP" >> $GITHUB_ENV
+            - name: Install GitHub CLI
+              run: |
+                sudo apt update && sudo apt install gh -y
+            - name: Update EC2_HOST secret in Python repo
+              run: |
+                echo $EIP | gh secret set EC2_HOST \
+                --repo Deepan474/Python_Demo \
+                --body -
+              env:
+                GH_TOKEN: ${{ secrets.GH_TOKEN }}
                 
