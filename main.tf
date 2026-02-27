@@ -83,7 +83,8 @@ resource "aws_instance" "myec2" {
     vpc_security_group_ids = [aws_security_group.SG_Demo.id]
     associate_public_ip_address = true
 
-    user_data = file("user_data.sh")
+    user_data = templatefile("user_data.sh", {
+    github_public_key = file("github_actions_key.pub")})
         
       tags = {
         Name = var.instance_name

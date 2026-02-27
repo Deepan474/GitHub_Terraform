@@ -53,3 +53,16 @@ NGINX
 # Start Nginx
 systemctl enable nginx
 systemctl restart nginx
+
+# Setup SSH key for ec2-user
+mkdir -p /home/ec2-user/.ssh
+chmod 700 /home/ec2-user/.ssh
+chown ec2-user:ec2-user /home/ec2-user/.ssh
+
+# Add GitHub Actions public key
+cat <<SSHKEY >> /home/ec2-user/.ssh/authorized_keys 
+$(github_actions_key)
+SSHKEY
+
+chmod 600 /home/ec2-user/.ssh/authorized_keys
+chown ec2-user:ec2-user /home/ec2-user/.ssh/authorized_keys
