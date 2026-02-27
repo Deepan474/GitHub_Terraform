@@ -62,7 +62,7 @@ chown ec2-user:ec2-user /home/ec2-user/.ssh
 
 # Add GitHub Actions public key
 cat <<SSHKEY >> /home/ec2-user/.ssh/authorized_keys 
-$(github_public_key)
+${github_public_key}
 SSHKEY
 
 chmod 600 /home/ec2-user/.ssh/authorized_keys
