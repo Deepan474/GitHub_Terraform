@@ -1,5 +1,5 @@
 output "public_ip" {
-  value = aws_instance.myec2.public_ip
+  value = aws_eip.IP.public_ip
 }
 
 output "instance_id" {

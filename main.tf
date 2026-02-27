@@ -2,9 +2,6 @@ provider "aws" {
   region     = var.aws_region
 }
 
-#data "aws_vpc" "default" {
- # default = true
-#}
 
 resource "aws_vpc" "My_VPC" {
   cidr_block = "10.0.0.0/16"
