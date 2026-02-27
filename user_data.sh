@@ -1,19 +1,18 @@
 #!/bin/bash
 set -e
-exec > /var/log/user-data.log 2>&1
         
 yum update -y
 yum install -y python3 git nginx
-        
-# Clone as ec2-user
-sudo -u ec2-user git clone https://github.com/Deepan474/Python_Demo.git /home/ec2-user/Python_Demo
-        
-cd /home/ec2-user/Python_Demo
-        
+
+# Create app directory
+mkdir -p /home/ec2-user/Python_Demo
+chown ec2-user:ec2-user /home/ec2-user/Python_Demo
+
+# Setup Python virtual environment
+cd /home/ec2-user/Python_Demo       
 python3 -m venv venv
         
-/home/ec2-user/Python_Demo/venv/bin/pip install --upgrade pip
-/home/ec2-user/Python_Demo/venv/bin/pip install -r requirements.txt
+# Install Gunicorn globally in venv
 /home/ec2-user/Python_Demo/venv/bin/pip install gunicorn
         
 # Create a systemd service file for Gunicorn
@@ -25,7 +24,7 @@ After=network.target
 [Service]
 User=ec2-user 
 WorkingDirectory=/home/ec2-user/Python_Demo
-ExecStart=/home/ec2-user/Python_Demo/venv/bin/gunicorn -w 3 -b 0.0.0.0:5000 main:app
+ExecStart=/home/ec2-user/Python_Demo/venv/bin/gunicorn -w 3 -b 127.0.0.1:5000 main:app
 Restart=always
 
 [Install]
@@ -35,7 +34,6 @@ SERVICE
 # Reload systemd to recognize the new service, enable it to start on boot, and start it immediately
 systemctl daemon-reload
 systemctl enable gunicorn
-systemctl start gunicorn
 
 # Configure Nginx as a reverse proxy
 cat <<NGINX > /etc/nginx/conf.d/flask_app.conf
