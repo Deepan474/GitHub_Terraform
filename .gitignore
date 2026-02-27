@@ -1,1 +1,5 @@
 First_EC2*
+.terraform/*
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl

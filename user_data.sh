@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+exec > var/log/user-data.log 2>&1
         
 yum update -y
 yum install -y python3 git nginx
@@ -61,7 +62,7 @@ chown ec2-user:ec2-user /home/ec2-user/.ssh
 
 # Add GitHub Actions public key
 cat <<SSHKEY >> /home/ec2-user/.ssh/authorized_keys 
-$(github_actions_key)
+$(github_public_key)
 SSHKEY
 
 chmod 600 /home/ec2-user/.ssh/authorized_keys
