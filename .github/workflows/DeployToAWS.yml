@@ -21,11 +21,18 @@ jobs:
             - name: Get Elastic IP from Terraform output
               id: get_eip
               run: |
-                EIP=$(terraform output -raw public_ip)
+                EIP=$(terraform output -raw public_ip 2>/dev/null || echo "")
+                if [ -z "$EIP" ]; then
+                  echo "Error: Unable to retrieve Elastic IP from Terraform output."
+                  exit 1
+                fi
                 echo "EIP=$EIP" >> $GITHUB_ENV
             - name: Install GitHub CLI
               run: |
                 sudo apt update && sudo apt install gh -y
+            - name: Debug IP Lenght
+              run: | 
+                echo -n "$EIP" | wc -c
             - name: Update EC2_HOST secret in Python repo
               run: |
                 echo $EIP | gh secret set EC2_HOST \
