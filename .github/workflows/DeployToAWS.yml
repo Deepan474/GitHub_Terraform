@@ -35,9 +35,9 @@ jobs:
                 echo -n "$EIP" | wc -c
             - name: Update EC2_HOST secret in Python repo
               run: |
-                echo $EIP | gh secret set EC2_HOST \
+                printf "%s" "$EIP" | gh secret set EC2_HOST \
                 --repo Deepan474/Python_Demo \
-                --body -
+                --app actions
               env:
                 GH_TOKEN: ${{ secrets.GH_TOKEN }}
                 
